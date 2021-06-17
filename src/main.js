@@ -1,6 +1,12 @@
 import { createApp } from 'vue';
 import App from './App.vue';
-import router from './router';
 import store from './store';
+import validate from '../includes/validate';
+import './assets/tailwind.css';
+import './assets/main.css';
 
-createApp(App).use(store).use(router).mount('#app');
+const vm = createApp(App);
+vm.use(store);
+vm.use(validate);
+
+vm.mount('#app');
