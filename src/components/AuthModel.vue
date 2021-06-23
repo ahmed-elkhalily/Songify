@@ -72,6 +72,7 @@
               <label class="inline-block mb-2">Password</label>
               <vee-field
                 type="password"
+                name="password"
                 class="block w-full py-1.5 px-3 text-gray-800 border border-gray-300 transition
                   duration-500 focus:outline-none focus:border-black rounded"
                 placeholder="Password"
@@ -86,7 +87,11 @@
             </button>
           </form>
           <!-- Registration Form -->
-          <vee-form v-show="tab === 'register'" :validation-schema="schema">
+          <vee-form
+            v-show="tab === 'register'"
+            :validation-schema="schema"
+            :initial-values="userData"
+          >
             <!-- Name -->
             <div class="mb-3">
               <label class="inline-block mb-2">Name</label>
@@ -125,20 +130,25 @@
             <!-- Password -->
             <div class="mb-3">
               <label class="inline-block mb-2">Password</label>
-              <vee-field
-                type="password"
-                name="password"
-                placeholder="Password"
-                class="block w-full py-1.5 px-3 text-gray-800 border border-gray-300 transition
+              <vee-field name="password" :validateOnInput="true" v-slot="{ field, errors }">
+                <input
+                  type="password"
+                  placeholder="Password"
+                  class="block w-full py-1.5 px-3 text-gray-800 border border-gray-300 transition
                   duration-500 focus:outline-none focus:border-black rounded"
-              />
-              <ErrorMessage class="text-red-400" name="password" />
+                  v-bind="field"
+                />
+                <div class="text-red-500" v-for="error in errors" :key="error">
+                  {{ error }}
+                </div>
+              </vee-field>
             </div>
             <!-- Confirm Password -->
             <div class="mb-3">
               <label class="inline-block mb-2">Confirm Password</label>
               <vee-field
                 name="confirmPassword"
+                :validateOnInput="true"
                 type="password"
                 class="block w-full py-1.5 px-3 text-gray-800 border border-gray-300 transition
                   duration-500 focus:outline-none focus:border-black rounded"
@@ -152,7 +162,6 @@
               <vee-field
                 as="select"
                 name="country"
-                value="USA"
                 class="block w-full py-1.5 px-3 text-gray-800 border border-gray-300 transition
                   duration-500 focus:outline-none focus:border-black rounded"
               >
@@ -172,6 +181,7 @@
                 class="w-4 h-4 float-left -ml-6 mt-1 rounded"
               />
               <label class="inline-block">Accept terms of service</label>
+              <br />
               <ErrorMessage class="text-red-400" name="tos" />
             </div>
             <button
@@ -201,9 +211,12 @@ export default {
         email: 'required|email',
         age: 'required|min_value:18|max_value:100',
         password: 'required|alphaDash|min:5|max:30',
-        confirmPassword: 'confirmed:@password',
-        country: 'required|excluded:Antercatica',
-        tos: 'required'
+        confirmPassword: 'password_dismatch:@password',
+        country: 'required|excluded_country:Antercatica',
+        tos: 'tos'
+      },
+      userData: {
+        country: 'Mexico'
       }
     };
   },
