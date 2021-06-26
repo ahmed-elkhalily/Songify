@@ -1,14 +1,6 @@
 <template>
   <!-- Registration Form -->
   <vee-form :validation-schema="schema" :initial-values="userData" @submit="submit">
-    <!-- 
-      reg_submition: false,
-      reg_show_alert: false,
-      reg_alert_variation: 'bg-gray-300',
-      reg_alert_message: 'Please wait! we are registring you.'
- 
-
-     -->
     <div
       class="text-white text-center p-2 mb-3"
       v-show="reg_show_alert"
@@ -119,10 +111,6 @@
 </template>
 
 <script>
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-const-assign */
-import { auth, db } from '../includes/firebase';
-
 export default {
   name: 'RegistrationForm',
   data() {
@@ -148,35 +136,19 @@ export default {
   methods: {
     async submit(values) {
       this.reg_show_alert = true;
-      this.reg_variation_variation = 'bg-gray-300';
 
-      let createdAuthor = null;
       try {
-        createdAuthor = await auth.createUserWithEmailAndPassword(values.email, values.password);
+        await this.$store.dispatch('register', values);
       } catch (error) {
-        this.reg_submition = false;
-        this.reg_alert_variation = 'bg-red-300';
+        this.reg_alert_variation = 'bg-red-500';
         this.reg_alert_message = error.message;
         return;
       }
-      console.log(createdAuthor);
-      try {
-        await db.collection('users').add({
-          email: values.email,
-          country: values.country,
-          name: values.name,
-          age: values.age,
-          uid: createdAuthor.user.uid
-        });
-      } catch (error) {
-        this.reg_submition = false;
-        this.reg_alert_variation = 'bg-red-300';
-        this.reg_alert_message = error.message;
-        return;
-      }
+
       this.reg_submition = true;
-      this.reg_alert_variation = 'bg-blue-300';
+      this.reg_alert_variation = 'bg-green-500';
       this.reg_alert_message = 'Your Registering Successed';
+      document.location.reload();
     }
   }
 };
