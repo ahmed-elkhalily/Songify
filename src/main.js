@@ -1,18 +1,20 @@
 import { createApp } from 'vue';
 import App from './App.vue';
 import store from './store';
+import router from './router/index';
 import validate from './includes/validate';
 import { auth } from './includes/firebase';
 import './assets/tailwind.css';
 import './assets/main.css';
 
-let vm = null;
+let app = null;
 auth.onAuthStateChanged(() => {
-  if (!vm) {
-    vm = createApp(App);
-    vm.use(store);
-    vm.use(validate);
+  if (!app) {
+    app = createApp(App);
+    app.use(store);
+    app.use(router);
+    app.use(validate);
 
-    vm.mount('#app');
+    app.mount('#app');
   }
 });
